@@ -4,8 +4,9 @@ import Watchlist from "../models/Watchlist.js";
 export const newWatchlist = async (req, res, next) => {
   try {
     const { type, item_id, poster_path } = req.body;
+    const userid = req.user._id;
 
-    let list = await Watchlist.findOne({ item_id });
+    let list = await Watchlist.findOne({ item_id,user:userid });
 
     if (list) {
       return next(
@@ -47,13 +48,14 @@ export const myWatchlist = async (req, res, next) => {
 export const checkWatchlistItem = async (req, res, next) => {
     try {
       const item_id = req.params.item_id;
+      const userid = req.user._id;
   
-      let item = await Watchlist.findOne({ item_id });
+      let item = await Watchlist.findOne({ item_id ,user:userid });
   
       if (!item) {
         return res.status(404).json({
           success: false,
-          message: "Watchlist item not found",
+          isMarked:false,
         });
       }
   
@@ -68,9 +70,9 @@ export const checkWatchlistItem = async (req, res, next) => {
 
 export const findWatchlistItem = async (req, res, next) => {
     try {
-      const item_id = req.params.item_id;
+      const id = req.params.id;
   
-      let item = await Watchlist.findOne({ item_id });
+      let item = await Watchlist.findOne({ _id:id });
   
       if (!item) {
         return res.status(404).json({
@@ -90,9 +92,9 @@ export const findWatchlistItem = async (req, res, next) => {
 
 export const updateWatchlist = async (req, res, next) => {
   try {
-    const { item_id } = req.params;
+    const id  = req.params.id;
 
-    const list = await Watchlist.findOne({item_id});
+    const list = await Watchlist.findOne({_id:id});
     if (!list) {
       return next(new ErrorHandler("Item not found", 404));
     }
