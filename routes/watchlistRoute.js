@@ -17,8 +17,10 @@ router.get("/my", isAuthenticated, myWatchlist);
 
 router.delete("/:item_id", isAuthenticated, updateWatchlist);
 
-router.get("/:item_id",isAuthenticated, findWatchlistItem);
-
 router.get("/:item_id/check", isAuthenticated, checkWatchlistItem);
+
+// router.get("/:item_id",isAuthenticated, findWatchlistItem);
+
+
 
 export default router;
