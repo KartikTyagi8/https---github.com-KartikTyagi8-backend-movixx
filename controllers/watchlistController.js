@@ -44,6 +44,28 @@ export const myWatchlist = async (req, res, next) => {
   }
 };
 
+export const checkWatchlistItem = async (req, res, next) => {
+    try {
+      const item_id = req.params.item_id;
+  
+      let item = await Watchlist.findOne({ item_id });
+  
+      if (!item) {
+        return res.status(404).json({
+          success: false,
+          message: "Watchlist item not found",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        isMarked: item.isMarked,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 export const findWatchlistItem = async (req, res, next) => {
     try {
       const item_id = req.params.item_id;
