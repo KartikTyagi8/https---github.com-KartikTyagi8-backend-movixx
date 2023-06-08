@@ -13,6 +13,10 @@ const WatchlistSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  poster_path: {
+    type: String,
+    required:true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",

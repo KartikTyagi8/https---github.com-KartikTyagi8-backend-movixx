@@ -3,7 +3,7 @@ import Watchlist from "../models/Watchlist.js";
 
 export const newWatchlist = async (req, res, next) => {
   try {
-    const { type, item_id } = req.body;
+    const { type, item_id, poster_path } = req.body;
 
     let list = await Watchlist.findOne({ item_id });
 
@@ -17,6 +17,7 @@ export const newWatchlist = async (req, res, next) => {
       type,
       item_id,
       user: req.user,
+      poster_path,
       isMarked: true,
     });
 
