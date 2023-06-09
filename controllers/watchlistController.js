@@ -104,7 +104,7 @@ export const findWatchlistItem = async (req, res, next) => {
   
       res.status(200).json({
         success: true,
-        message: "Updated Successfully",
+        message: "Item Removed",
       });
     } catch (error) {
       next(error);
