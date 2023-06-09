@@ -19,7 +19,6 @@ export const newWatchlist = async (req, res, next) => {
       item_id,
       user: req.user,
       poster_path,
-      isMarked: true,
     });
 
     res.status(200).json({
@@ -34,7 +33,7 @@ export const myWatchlist = async (req, res, next) => {
   try {
     const userid = req.user._id;
 
-    let list = await Watchlist.find({ user: userid, isMarked: true });
+    let list = await Watchlist.find({ user: userid });
 
     res.status(200).json({
       success: true,
@@ -47,7 +46,7 @@ export const myWatchlist = async (req, res, next) => {
 
 export const checkWatchlistItem = async (req, res, next) => {
     try {
-      const item_id = req.params.item_id;
+      const {item_id} = req.params;
       const userid = req.user._id;
   
       let item = await Watchlist.findOne({ item_id ,user:userid });
@@ -55,13 +54,12 @@ export const checkWatchlistItem = async (req, res, next) => {
       if (!item) {
         return res.status(404).json({
           success: false,
-          isMarked:false,
+          message: "Item is not found"
         });
       }
   
       res.status(200).json({
         success: true,
-        isMarked: item.isMarked,
       });
     } catch (error) {
       next(error);
@@ -70,9 +68,10 @@ export const checkWatchlistItem = async (req, res, next) => {
 
 export const findWatchlistItem = async (req, res, next) => {
     try {
-      const id = req.params.id;
+      const {item_id} = req.params;
+      const userid = req.user._id;
   
-      let item = await Watchlist.findOne({ _id:id });
+      let item = await Watchlist.findOne({ item_id:item_id,user:userid });
   
       if (!item) {
         return res.status(404).json({
@@ -90,23 +89,25 @@ export const findWatchlistItem = async (req, res, next) => {
     }
   };
 
-export const updateWatchlist = async (req, res, next) => {
-  try {
-    const id  = req.params.id;
-
-    const list = await Watchlist.findOne({_id:id});
-    if (!list) {
-      return next(new ErrorHandler("Item not found", 404));
+  export const updateWatchlist = async (req, res, next) => {
+    try {
+      const {item_id} = req.params;
+      const userId = req.user._id;
+  
+      const item = await Watchlist.findOne({ item_id: item_id, user: userId });
+  
+      if (!item) {
+        return next(new ErrorHandler("Item not found", 404));
+      }
+  
+      await item.deleteOne();
+  
+      res.status(200).json({
+        success: true,
+        message: "Updated Successfully",
+      });
+    } catch (error) {
+      next(error);
     }
-
-    list.isMarked = !list.isMarked;
-    await list.deleteOne();
-
-    res.status(200).json({
-      success: true,
-      message: "Deleted Successfully",
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  };
+  
